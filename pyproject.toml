@@ -1,0 +1,21 @@
+[project]
+name = "trabajo-1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "customtkinter>=5.2.2",
+    "flask>=3.1.2",
+    "fpdf>=1.7.2",
+    "img2pdf>=0.6.3",
+    "matplotlib>=3.10.8",
+    "opencv-python>=4.13.0.92",
+    "pandas>=2.3.3",
+    "pillow>=12.1.0",
+    "pyautogui>=0.9.54",
+    "pydicom>=3.0.1",
+    "python-xlib>=0.33",
+    "tensorflow>=2.20.0",
+    "tkcap>=0.0.4",
+]

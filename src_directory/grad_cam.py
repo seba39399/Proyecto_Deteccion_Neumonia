@@ -1,0 +1,36 @@
+import tensorflow as tf
+import numpy as np
+import cv2
+from src_directory.preprocess_img import preprocess
+
+def grad_cam(array, model):
+    img = preprocess(array)
+    last_conv_layer = model.get_layer("conv10_thisone") 
+    grad_model = tf.keras.models.Model([model.inputs], [last_conv_layer.output, model.output])
+
+    with tf.GradientTape() as tape:
+        conv_outputs, predictions = grad_model(img)
+        if isinstance(predictions, list): predictions = predictions[0]
+        argmax = np.argmax(predictions[0])
+        loss = predictions[:, argmax]
+
+    grads = tape.gradient(loss, conv_outputs)
+    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    conv_outputs = conv_outputs[0]
+    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+    heatmap = tf.squeeze(heatmap)
+
+    # Corrección del error .numpy()
+    if hasattr(heatmap, 'numpy'):
+        heatmap = heatmap.numpy()
+
+    heatmap = np.maximum(heatmap, 0) / (np.max(heatmap) + 1e-10)
+    heatmap = cv2.resize(heatmap, (512, 512))
+    heatmap = np.uint8(255 * heatmap)
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
+    
+    img2 = cv2.resize(array, (512, 512))
+    if len(img2.shape) == 2: img2 = cv2.cvtColor(img2, cv2.COLOR_GRAY2RGB)
+    
+    superimposed_img = cv2.addWeighted(img2, 0.6, heatmap, 0.4, 0)
+    return superimposed_img[:, :, ::-1] # BGR a RGB
