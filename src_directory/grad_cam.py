@@ -6,7 +6,7 @@ from src_directory.preprocess_img import preprocess
 def grad_cam(array, model):
     """Recibe la imagen y la pasa por el modelo, toma la última capa convolucional y a partir de esta
     calcula el gradiente de la clase predicha, luego se usan esos gradientes como pesos para generar un mapa de calor y superponerlo a la imagen original, prueba mofican
-    do informacion"""
+    do informacion dkfjhsdjkchjk"""
     img = preprocess(array)
     last_conv_layer = model.get_layer("conv10_thisone") 
     grad_model = tf.keras.models.Model([model.inputs], [last_conv_layer.output, model.output])
