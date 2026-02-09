@@ -10,5 +10,4 @@ wheels/
 .venv
 
 # Jupyter Notebook checkpoints
-.ipynb_checkpoints/
 conv_MLP_84.h5
