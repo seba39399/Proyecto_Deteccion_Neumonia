@@ -1,20 +1,21 @@
 import csv
 import os
+import sys
 from datetime import datetime
 from tkinter import *
 from tkinter import ttk, font, filedialog, messagebox
 from PIL import ImageTk, Image
 from fpdf import FPDF 
 
-# Importación de módulos lógicos
+# Importaciones de lógica interna
 from src_directory.load_model import model_fun
 from src_directory.read_img import read_dicom_file, read_jpg_file
 from src_directory.integrator import predict
 
 class App:
     """
-    Clase de interfaz gráfica. 
-    Diseñada para ser instanciada desde un módulo externo (main.py).
+    Clase de interfaz gráfica modularizada.
+    Maneja la detección de neumonía y generación de reportes.
     """
     def __init__(self):
         self.root = Tk()
@@ -22,21 +23,43 @@ class App:
         self.root.geometry("815x560")
         self.root.resizable(0, 0)
         
+        # Configuración del Icono (Favicon) 
+        self._set_favicon("favicon.ico")
+
+        # Variables de control
         self.ID = StringVar()
         self.array = None
         self.label = "" 
         self.proba = 0.0
         
+        # Configuración visual
         fonti = font.Font(weight="bold")
         self._setup_widgets(fonti)
         
-        # Carga diferida del modelo para no bloquear el dibujado de la ventana
+        # Carga diferida del modelo para evitar congelamiento inicial
         self.root.after(100, self._load_model_async)
+        
+        # Inicio del ciclo principal
         self.root.mainloop()
 
+    def _set_favicon(self, filename):
+        """Busca y establece el icono de la ventana."""
+        try:
+            # Obtiene la ruta del directorio donde está el script principal
+            base_path = os.getcwd()
+            icon_path = os.path.join(base_path, filename)
+            
+            if os.path.exists(icon_path):
+                self.root.iconbitmap(icon_path)
+            else:
+                print(f"Aviso: No se encontró el icono en {icon_path}. Se usará el por defecto.")
+        except Exception as e:
+            # Si falla el icono, el programa debe continuar
+            print(f"Error no crítico al cargar favicon: {e}")
+
     def _setup_widgets(self, fonti):
-        """Define y posiciona todos los elementos visuales."""
-        # Etiquetas
+        """Define y posiciona todos los elementos de la interfaz."""
+        # Labels
         ttk.Label(self.root, text="Imagen Radiográfica", font=fonti).place(x=110, y=65)
         ttk.Label(self.root, text="Imagen con Heatmap", font=fonti).place(x=545, y=65)
         ttk.Label(self.root, text="Resultado:", font=fonti).place(x=500, y=350)
@@ -44,7 +67,7 @@ class App:
         ttk.Label(self.root, text="SOFTWARE PARA EL APOYO AL DIAGNÓSTICO MÉDICO", font=fonti).place(x=122, y=25)
         ttk.Label(self.root, text="Probabilidad:", font=fonti).place(x=500, y=400)
 
-        # Entradas y Visores de imagen
+        # Entradas y Visores
         self.text1 = ttk.Entry(self.root, textvariable=self.ID, width=10)
         self.text1.place(x=200, y=350)
         
@@ -59,7 +82,7 @@ class App:
         self.text3 = Text(self.root, state=DISABLED)
         self.text3.place(x=610, y=400, width=90, height=30)
 
-        # Botones de acción
+        # Botones
         self.button1 = ttk.Button(self.root, text="Predecir", state="disabled", command=self.run_model)
         self.button1.place(x=220, y=460)
         
@@ -70,14 +93,12 @@ class App:
         self.text1.focus_set()
 
     def _load_model_async(self):
-        """Carga el motor de IA."""
         try:
             self.model = model_fun()
         except Exception as e:
             messagebox.showerror("Error", f"Fallo al cargar modelo: {e}")
 
     def load_img_file(self):
-        """Explorador de archivos para imágenes médicas."""
         filepath = filedialog.askopenfilename(filetypes=(("DICOM", "*.dcm"), ("Images", "*.jpg *.jpeg *.png")))
         if filepath:
             if filepath.lower().endswith('.dcm'):
@@ -92,7 +113,6 @@ class App:
             self.button1["state"] = "enabled"
 
     def run_model(self):
-        """Controla el flujo de predicción y actualización de la UI."""
         self.text2.config(state=NORMAL); self.text3.config(state=NORMAL)
         self.text2.delete(1.0, END); self.text3.delete(1.0, END)
         self.text_img2.delete(1.0, END)
@@ -109,41 +129,42 @@ class App:
         self.text2.config(state=DISABLED); self.text3.config(state=DISABLED)
 
     def save_results_full(self):
-        """Exportación de datos a CSV y PDF."""
         cedula = self.text1.get()
         if not cedula or not self.label:
             messagebox.showwarning("Atención", "Se requiere cédula y predicción previa.")
             return
 
-        # CSV
+        # Registro en CSV
         try:
             with open("historial.csv", "a", newline='', encoding='utf-8') as f:
                 csv.writer(f, delimiter="-").writerow([cedula, self.label, f"{self.proba:.2f}%", datetime.now()])
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo escribir en CSV: {e}")
 
-        # PDF
+        # Generación de PDF 
         try:
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Helvetica", 'B', 16)
             pdf.cell(0, 10, "INFORME MEDICO DE APOYO AL DIAGNOSTICO", ln=True, align='C')
             pdf.ln(10)
+            
             pdf.set_font("Helvetica", size=12)
             pdf.cell(0, 10, f"Paciente ID: {cedula}", ln=True)
             pdf.cell(0, 10, f"Fecha de emision: {datetime.now().strftime('%Y-%m-%d %H:%M')}", ln=True)
             pdf.ln(5)
+            
             pdf.set_font("Helvetica", 'B', 14)
             pdf.cell(0, 10, f"HALLAZGO: {self.label.upper()}", ln=True)
             pdf.cell(0, 10, f"CONFIANZA DEL MODELO: {self.proba:.2f}%", ln=True)
             
-            pdf.output(f"Reporte_{cedula}.pdf")
-            messagebox.showinfo("Proceso Exitoso", f"Reporte PDF y CSV generados para ID: {cedula}")
+            pdf_name = f"Reporte_{cedula}.pdf"
+            pdf.output(pdf_name)
+            messagebox.showinfo("Proceso Exitoso", f"Reporte PDF y CSV generados: {pdf_name}")
         except Exception as e:
             messagebox.showerror("Error PDF", str(e))
 
     def delete(self):
-        """Resetea la interfaz."""
         if messagebox.askokcancel("Confirmar", "¿Desea limpiar todos los campos?"):
             self.text2.config(state=NORMAL); self.text3.config(state=NORMAL)
             self.text1.delete(0, END); self.text2.delete(1.0, END); self.text3.delete(1.0, END)
