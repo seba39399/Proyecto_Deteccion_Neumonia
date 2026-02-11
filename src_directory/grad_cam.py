@@ -5,7 +5,18 @@ from src_directory.preprocess_img import preprocess
 
 def grad_cam(array, model):
     """Recibe la imagen y la pasa por el modelo, toma la última capa convolucional y a partir de esta
-    calcula el gradiente de la clase predicha, luego se usan esos gradientes como pesos para generar un mapa de calor y superponerlo a la imagen original"""
+    calcula el gradiente de la clase predicha, luego se usan esos gradientes como pesos para generar un mapa de calor y superponerlo a la imagen original
+    
+    Args:
+        array (numpy.ndarray): Array original de la imagen (puede ser escala de grises o RGB).
+        model (tf.keras.Model): Modelo de inteligencia artificial previamente cargado.
+                               Debe contener una capa llamada 'conv10_thisone'.
+
+    Returns:
+        numpy.ndarray: Imagen final en formato RGB (512, 512, 3) con el mapa de calor 
+                       superpuesto mediante transparencia (0.6 original / 0.4 heatmap).
+    
+    """
     img = preprocess(array)
     last_conv_layer = model.get_layer("conv10_thisone") 
     grad_model = tf.keras.models.Model([model.inputs], [last_conv_layer.output, model.output])

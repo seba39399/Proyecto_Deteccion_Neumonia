@@ -16,6 +16,15 @@ class App:
     """
     Clase de interfaz gráfica modularizada.
     Maneja la detección de neumonía y generación de reportes.
+
+    Attributes:
+        root (Tk): Ventana principal de la aplicación.
+        model (tf.keras.Model): Modelo de IA cargado para predicciones.
+        ID (StringVar): Variable para almacenar la cédula del paciente.
+        array (numpy.ndarray): Arreglo de la imagen cargada.
+        label (str): Resultado de la predicción (Neumonía o Normal).
+        proba (float): Probabilidad de la predicción.    
+
     """
     def __init__(self):
         self.root = Tk()
