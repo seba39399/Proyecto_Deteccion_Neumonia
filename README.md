@@ -115,7 +115,7 @@ source .venv/bin/activate
 
 ## 5. Modelo (.h5)
 
-El proyecto requiere un modelo entrenado en formato Keras `.h5`. Para dicho fin, coloque el archivo del modelo en la **carpeta raíz** del proyecto (junto a `main.py`).
+El proyecto requiere un modelo entrenado en formato Keras `.h5`. Para dicho fin, coloque el archivo del modelo en la carpeta raíz del proyecto (junto a `main.py`).
 
 El modelo debe ubicarse en la carpeta raíz:
 
@@ -127,7 +127,7 @@ Si cambia el nombre, modifique la ruta en:
 
 ### Arquitectura del modelo
 
-CNN inspirada en la propuesta de Pasa et al. para análisis de radiografías:
+CNN inspirada en la propuesta de Pasa et al., para análisis de radiografías:
 
 - 5 bloques convolucionales con 16, 32, 48, 64 y 80 filtros (3×3).  
 - Conexiones tipo skip para evitar desvanecimiento del gradiente.  
@@ -145,7 +145,7 @@ uv run python main.py
 
 ## 7. Uso de la interfaz (GUI)
 
-1. (Opcional) ingresar la **cédula del paciente**.  
+1. Ingresar la cédula del paciente (Opcional).  
 2. Presionar **Cargar Imagen** y seleccionar un archivo `.dcm` o `.jpg/.png`.  
 3. Presionar **Predecir** para obtener:
    - clase (bacteriana / viral / normal)
