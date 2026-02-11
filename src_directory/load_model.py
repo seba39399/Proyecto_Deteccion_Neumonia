@@ -1,21 +1,41 @@
+import os
 import tensorflow as tf
 
 def model_fun():
     """
-    Carga un modelo entrenado de TensorFlow/Keras desde un archivo .h5.
+    Carga un modelo entrenado desde un archivo .h5.
 
-    Args:
-        path_model (str):
-            Ruta del archivo del modelo en formato .h5.
 
-    Returns:
-        tf.keras.Model:
-            Modelo de Keras cargado y listo para inferencia.
+    Parameters
+    ----------
+    path_model : str
+        Ruta al archivo del modelo entrenado.
 
-    Example:
-        model = model_fun("conv_MLP_84.h5")
+
+    Returns
+    -------
+    tf.keras.Model
+        Modelo cargado sin compilar.
+
+
+    Raises
+    ------
+    FileNotFoundError
+        Si la ruta del modelo no existe.
     """
-    
-    model = tf.keras.models.load_model('conv_MLP_84.h5', compile=False)
-    return model
 
+
+    # Variable local
+    model_path = 'conv_MLP_84.h5'
+
+
+    # Validar existencia del archivo
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"El archivo del modelo no existe: {model_path}")
+
+
+    # Cargar modelo
+    model = tf.keras.models.load_model(model_path, compile=False)
+
+
+    return model
