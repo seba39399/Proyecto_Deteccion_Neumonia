@@ -64,9 +64,6 @@ Proyecto_Deteccion_Neumonia/
 └── README.md
 
 ```
-
-> La versión principal de la práctica se ejecuta desde **`main.py` (Tkinter)**, salvo que el equipo indique lo contrario.
-
 ---
 
 ## 4. Requerimientos y entorno (UV)
