@@ -4,7 +4,7 @@
 - Miguel Angel Franco Restrepo (22506163)  
 - Saulo Quiñones Góngora (22506635)  
 - Adrian Felipe Vargas Rojas (22505561)
-- Juan Sebastián Peña Valderrama ()  
+- Juan Sebastián Peña Valderrama (22502483)  
 
 **Curso:** Desarrollo de Proyectos de IA  
 **Institución:** Universidad Autónoma de Occidente  
@@ -53,7 +53,6 @@ Proyecto_Deteccion_Neumonia/
 │   ├── test_shape_preprocess.py           # Prueba del preprocesamiento (shape del tensor)
 │   └── test_load_model.py                 # Prueba de carga del modelo (.h5)
 │
-├── detector_neumonia.py                   # Versión anterior a corregir
 ├── favicon.ico                            # Ícono de la aplicación
 ├── main.py                                # Punto de entrada principal (GUI)
 │
@@ -111,6 +110,30 @@ uv sync
 - macOS/Linux:
 ```bash
 source .venv/bin/activate
+```
+Se recomienda ejecutar `uv sync` para instalar exactamente las versiones registradas en `uv.lock`.
+
+**Nota sobre el entorno de desarrollo:**
+
+El proyecto fue desarrollado y probado utilizando **Python 3.10.19**. Aunque en `pyproject.toml` se especifica `requires-python = ">=3.10"`, la versión empleada durante la implementación fue 3.10.19, garantizando compatibilidad con TensorFlow y el resto de dependencias.
+
+Dependencias principales (versiones mínimas declaradas):
+
+```
+- customtkinter >= 5.2.2  
+- flask >= 3.1.2  
+- fpdf >= 1.7.2  
+- img2pdf >= 0.6.3  
+- matplotlib >= 3.10.8  
+- opencv-python >= 4.13.0.92  
+- pandas >= 2.3.3  
+- pillow >= 12.1.0  
+- pyautogui >= 0.9.54  
+- pydicom >= 3.0.1  
+- pytest >= 9.0.2  
+- python-xlib >= 0.33  
+- tensorflow >= 2.20.0  
+- tkcap >= 0.0.4  
 ```
 
 ## 5. Modelo (.h5)
