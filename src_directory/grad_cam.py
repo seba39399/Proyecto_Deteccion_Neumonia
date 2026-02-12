@@ -23,7 +23,7 @@ def grad_cam(array, model):
 
     grads = tape.gradient(loss, conv_outputs)
 
-    #Se promedia los gradientes para obtener la importancia de cada filtro
+    #Se promedia  los gradientes para obtener la importancia de cada filtro
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
     conv_outputs = conv_outputs[0]
 
