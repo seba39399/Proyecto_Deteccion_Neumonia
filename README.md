@@ -212,6 +212,18 @@ uv run pytest
 ```
 
 ---
+
+## 10. Diagrama UML
+
+A continuación, se presenta un diagrama UML, el cual presenta la arquitectura modular del sistema de detección de neumonía, mostrando la organización de los módulos, sus responsabilidades y las dependencias entre componentes. Se ilustra el flujo principal desde la interfaz gráfica hasta el procesamiento, la predicción y la generación de la explicación mediante Grad-CAM.
+
+<img width="1459" height="1007" alt="image" src="https://github.com/user-attachments/assets/a204f3bf-7609-42a1-b060-99589605a309" />
+
+---
 ## 11. Uso académico
 
 Este proyecto es de uso educativo y no reemplaza un diagnóstico médico profesional.
+
+## 12. Licencia.
+
+Este proyecto está licenciado bajo la licencia MIT: consulte el archivo de LICENCIA para obtener más detalles.
