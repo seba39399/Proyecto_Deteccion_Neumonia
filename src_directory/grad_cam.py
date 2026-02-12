@@ -18,9 +18,13 @@ def grad_cam(array, model):
     
     """
     img = preprocess(array)
+
+    #Se obtiene la última capa convolucional
     last_conv_layer = model.get_layer("conv10_thisone") 
+
     grad_model = tf.keras.models.Model([model.inputs], [last_conv_layer.output, model.output])
 
+    #Se calculan gradientes
     with tf.GradientTape() as tape:
         conv_outputs, predictions = grad_model(img)
         if isinstance(predictions, list): predictions = predictions[0]
@@ -28,15 +32,20 @@ def grad_cam(array, model):
         loss = predictions[:, argmax]
 
     grads = tape.gradient(loss, conv_outputs)
+
+    #Se promedia  los gradientes para obtener la importancia de cada filtro
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
     conv_outputs = conv_outputs[0]
+
+    #Se multiplican mapas de activación por su importancia
     heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
     heatmap = tf.squeeze(heatmap)
 
     # Corrección del error .numpy()
     if hasattr(heatmap, 'numpy'):
         heatmap = heatmap.numpy()
-
+        
+    #Se normaliza, se realiza un resize y se suporpone la imagen para obtener la imagen con el mapa de calor
     heatmap = np.maximum(heatmap, 0) / (np.max(heatmap) + 1e-10)
     heatmap = cv2.resize(heatmap, (512, 512))
     heatmap = np.uint8(255 * heatmap)
