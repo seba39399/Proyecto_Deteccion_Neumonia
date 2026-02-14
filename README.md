@@ -48,6 +48,9 @@ Proyecto_Deteccion_Neumonia/
 │   ├── integrator.py                      # Orquestación del flujo completo
 │   └── gui.py                             # Interfaz gráfica Tkinter
 │
+│
+├── model                                  # Carpeta donde guardar el modelo previamente entrenado
+│   ├── conv_MLP_84.h5                     # Modelo en formato (.h5)
 ├── tests/
 │   ├── __pycache__/
 │   ├── test_shape_preprocess.py           # Prueba del preprocesamiento (shape del tensor)
@@ -144,16 +147,9 @@ Dependencias principales (versiones mínimas declaradas):
 
 ## 5. Modelo (.h5)
 
-El proyecto requiere un modelo entrenado en formato Keras `.h5`. Para dicho fin, coloque el archivo del modelo en la carpeta raíz del proyecto (junto a `main.py`).
+El proyecto requiere un modelo previamente entrenado en formato Keras (.h5). Para su correcta ejecución, el archivo del modelo debe ubicarse dentro de una carpeta denominada model, la cual debe ser creada por el usuario después de clonar el repositorio. Esta carpeta debe situarse en la raíz del proyecto, al mismo nivel que la carpeta src_directory.
 
-El modelo debe ubicarse en la carpeta raíz:
-
-`conv_MLP_84.h5`  
-
-Si cambia el nombre, modifique la ruta en:
-
-`src_directory/load_model.py`
-
+El archivo puede tener cualquier nombre, ya que el módulo `load_model.py` fue diseñado para manejar de forma desacoplada la carga del modelo, validando la existencia del archivo y centralizando la lógica de inicialización. Es pertinente destacar que solo se debe ubicar un único archivo en formato Keras (.h5) dentro de dicha carpeta, para evitar posibles errores durante la ejecución del aplicativo.
 ### Arquitectura del modelo
 
 CNN inspirada en la propuesta de Pasa et al., para análisis de radiografías:
