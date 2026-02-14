@@ -221,12 +221,67 @@ A continuación, se presenta un diagrama UML, el cual presenta la arquitectura m
 
 <img width="1682" height="1024" alt="image" src="https://github.com/user-attachments/assets/b7ab76a5-2066-4ef1-8c53-1c2a74b665b4" />
 
+Aquí tienes el bloque **en Markdown puro**, listo para copiar y pegar en tu `README.md`:
 
 ---
-## 11. Uso académico
+
+## 11. Ejecución y empaquetado con Docker
+
+El proyecto puede ejecutarse dentro de un contenedor Docker, lo cual permite aislar dependencias y garantizar portabilidad del entorno.
+
+### 11.1 Construcción de la imagen
+
+Desde la carpeta raíz del proyecto (donde se encuentra el `Dockerfile`), ejecutar:
+
+```bash
+docker build -t neumonia-app .
+```
+
+Este comando construye una imagen llamada `neumonia-app` con todas las dependencias necesarias para la aplicación.
+
+---
+
+### 11.2 Ejecución del contenedor (Windows con XLaunch)
+
+Dado que la aplicación utiliza **Tkinter** (interfaz gráfica), es necesario contar con un servidor X para poder visualizar la GUI desde el contenedor Docker.
+
+En Windows se utilizó **XLaunch (Xming)** como servidor gráfico.
+
+#### Pasos:
+
+1. Iniciar **XLaunch**.
+2. Seleccionar:
+
+   * *Multiple windows*
+   * *Start no client*
+   * Activar **Disable access control**
+3. Finalizar la configuración.
+
+Luego ejecutar el contenedor con:
+
+```bash
+docker run -it --rm -e DISPLAY=host.docker.internal:0.0 neumonia-app
+```
+
+#### Explicación de los parámetros:
+
+* `-it` → Ejecuta el contenedor en modo interactivo.
+* `--rm` → Elimina el contenedor al finalizar.
+* `-e DISPLAY=host.docker.internal:0.0` → Redirige la interfaz gráfica al servidor X del host (XLaunch).
+
+---
+
+### 11.3 Consideraciones
+
+* Docker debe estar en ejecución.
+* XLaunch debe iniciarse antes de correr el contenedor.
+* Si la interfaz no aparece, verificar que la opción **Disable access control** esté activada en XLaunch.
+
+---
+## 12. Uso académico
 
 Este proyecto es de uso educativo y no reemplaza un diagnóstico médico profesional.
 
-## 12. Licencia.
+## 13. Licencia.
 
 Este proyecto está licenciado bajo la licencia MIT: consulte el archivo de LICENCIA para obtener más detalles.
