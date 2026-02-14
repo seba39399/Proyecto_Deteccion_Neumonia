@@ -53,6 +53,12 @@ Proyecto_Deteccion_Neumonia/
 │   ├── test_shape_preprocess.py           # Prueba del preprocesamiento (shape del tensor)
 │   └── test_load_model.py                 # Prueba de carga del modelo (.h5)
 │
+│   .gitignore                             # Archivo donde se indican que elementos no se deben
+│                                            cargar al repositorio de Guithub
+├── docker.dockerignore                    # Archivo donde se indican que elementos se deben
+│                                            incluir en la imagen del proyecto
+├── Dockerfile                             # Archivo de configuración para la creación de la
+│                                            imagen del proyecto
 ├── favicon.ico                            # Ícono de la aplicación
 ├── main.py                                # Punto de entrada principal (GUI)
 │
