@@ -1,43 +1,54 @@
 import pytest
+import os
 
-from src_directory.load_model import model_fun
-
+# Usamos 'as' para mapear el nombre real de tu función al nombre que usa el test
+from src_directory.load_model import load_any_model as load_trained_model
 
 # -----------------------------
-# Test 1: cuando el archivo existe
+# Test 1: Cuando el modelo existe en la carpeta
 # -----------------------------
-def test_model_fun_when_file_exists(monkeypatch):
+def test_load_trained_model_success(monkeypatch):
+    # Definimos una ruta de carpeta falsa
+    fake_dir = "/fake/directory/model"
+    # El archivo que glob "encontrará"
+    fake_file_path = os.path.join(fake_dir, "modelo_test.h5")
 
-    # Simula que el archivo SÍ existe
+    # 1. Simulamos que glob.glob encuentra un archivo .h5
     monkeypatch.setattr(
-        "src_directory.load_model.os.path.exists",
-        lambda path: True
+        "src_directory.load_model.glob.glob",
+        lambda pattern: [fake_file_path]
     )
 
-    # Modelo falso
-    fake_model = object()
+    # 2. Creamos un objeto de modelo falso
+    fake_model_obj = "Soy un modelo de Keras"
 
-    # Simula load_model
+    # 3. Simulamos la carga real de TensorFlow
     monkeypatch.setattr(
         "src_directory.load_model.tf.keras.models.load_model",
-        lambda path, compile=False: fake_model
+        lambda path, compile=False: fake_model_obj
     )
 
-    model = model_fun()
+    # Ejecutamos la función (que ahora es load_any_model gracias al alias)
+    result = load_trained_model(fake_dir)
 
-    assert model is fake_model
+    # Verificamos que el resultado es el que simulamos
+    assert result == fake_model_obj
 
 
 # -----------------------------
-# Test 2: cuando el archivo NO existe
+# Test 2: Cuando NO hay archivos .h5 o .keras
 # -----------------------------
-def test_model_fun_when_file_not_exists(monkeypatch):
+def test_load_trained_model_not_found(monkeypatch):
+    fake_dir = "/fake/directory/empty"
 
-    # Simula que el archivo NO existe
+    # Simulamos que glob.glob devuelve una lista vacía
     monkeypatch.setattr(
-        "src_directory.load_model.os.path.exists",
-        lambda path: False
+        "src_directory.load_model.glob.glob",
+        lambda pattern: []
     )
 
-    with pytest.raises(FileNotFoundError):
-        model_fun()
+    # Verificamos que se lanza la excepción FileNotFoundError
+    with pytest.raises(FileNotFoundError) as excinfo:
+        load_trained_model(fake_dir)
+    
+    assert "No se encontró ningún modelo" in str(excinfo.value)

@@ -8,7 +8,7 @@ from PIL import ImageTk, Image
 from fpdf import FPDF 
 
 # Importaciones de lógica interna
-from src_directory.load_model import model_fun
+from src_directory.load_model import load_any_model as model_fun
 from src_directory.read_img import read_dicom_file, read_jpg_file
 from src_directory.integrator import predict
 
