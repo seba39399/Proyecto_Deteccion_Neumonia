@@ -1,41 +1,39 @@
 import os
 import tensorflow as tf
+import glob
 
-def model_fun():
+def load_any_model(directory="model"):
     """
-    Carga un modelo entrenado desde un archivo .h5.
+    Busca automáticamente el primer modelo disponible (.h5) en el directorio especificado y lo carga.
 
+    Args:
+        directory (str): Ruta del directorio donde se buscan los modelos. 
+            Por defecto es "model".
+    Returns:
+        tf.keras.Model: El modelo cargado listo para usar.
 
-    Parameters
-    ----------
-    path_model : str
-        Ruta al archivo del modelo entrenado.
-
-
-    Returns
-    -------
-    tf.keras.Model
-        Modelo cargado sin compilar.
-
-
-    Raises
-    ------
-    FileNotFoundError
-        Si la ruta del modelo no existe.
     """
+    # Buscamos archivos que terminen en .h5
+    formatos = ['*.h5']
+    archivos_modelo = []
+    
+    for formato in formatos:
+        archivos_modelo.extend(glob.glob(os.path.join(directory, formato)))
 
+    # Si no hay archivos, lanzamos error
+    if not archivos_modelo:
+        raise FileNotFoundError(f"No se encontró ningún modelo (.h5 o .keras) en: {os.path.abspath(directory)}")
 
-    # Variable local
-    model_path = 'conv_MLP_84.h5'
+    # Tomamos el primero que encuentre 
+    model_path = archivos_modelo[0]
+    
+    print(f"--- Cargando modelo detectado: {model_path} ---")
 
+    try:
+        model = tf.keras.models.load_model(model_path, compile=False)
+        return model
+    except Exception as e:
+        raise RuntimeError(f"Error técnico al cargar {model_path}: {e}")
 
-    # Validar existencia del archivo
-    if not os.path.exists(model_path):
-        raise FileNotFoundError(f"El archivo del modelo no existe: {model_path}")
-
-
-    # Cargar modelo
-    model = tf.keras.models.load_model(model_path, compile=False)
-
-
-    return model
+if __name__ == "__main__":
+    model = load_any_model()
